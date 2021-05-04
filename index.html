@@ -142,7 +142,7 @@ function shape_generator_template(shape, shape_color, layer) {
         ${shape[1]}.setColor(${shape_color[1]}).rotateZ(90),
         ${shape[2]}.setColor(${shape_color[2]}),
         ${shape[3]}.setColor(${shape_color[3]}).rotateZ(-90)
-    ]).scale([Math.pow(0.7,${layer}),Math.pow(0.7,${layer}),1]).translate([0,0,0.4*${layer}])
+    ]).scale([Math.pow(0.7,${layer}),Math.pow(0.7,${layer}),1]).translate([0,0,0.4*(${layer}-1)])
     `
     return shape_js
 }
@@ -220,10 +220,9 @@ function updateSolid()
 <div id="viewer"></div>
 <input id="shape_code" placeholder="shape code" onchange="generate_shape_uri()" onkeydown="enter_input()">
   <h2>Playground</h2>
-The jscad output can be edited bellow see original project https://joostn.github.io/OpenJsCad/ for for information
-- http://openjscad.azurewebsites.net/
-- https://github.com/jscad/OpenJSCAD.org
-<br><br> 
+The jscad output can be edited bellow see original project <a href="https://joostn.github.io/OpenJsCad/">https://joostn.github.io/OpenJsCad/</a>
+<br>- <a href="http://openjscad.azurewebsites.net/">http://openjscad.azurewebsites.net/</a><br>- <a href="https://github.com/jscad/OpenJSCAD.org">https://github.com/jscad/OpenJSCAD.org</a>
+<br><br>
 <textarea id="code">
 </textarea><br>
 <input type="submit" value="Update" onclick="updateSolid(); return false;">
