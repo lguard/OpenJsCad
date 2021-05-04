@@ -2,6 +2,7 @@
 
 <html><head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.3.2/math.js" integrity="sha512-Imer9iTeuCPbyZUYNTKsBWsAk3m7n1vOgPsAmw4OlkGSS9qK3/WlJZg7wC/9kL7nUUOyb06AYS8DyYQV7ELEbg==" crossorigin="anonymous"></script>
   <script src="lib/three.min.js"></script>
   <script src="lib/orbitcontrols.js"></script>
   <!-- fallback if no WebGL -->
@@ -66,28 +67,19 @@ const uncolored = [0.7,0.7,0.7];
 const white = [1,1,1];
 
 const color_code_map = {
-     r: "red",
-     g: "green",
-     b: "blue",
-     y: "yellow",
-     p: "purple",
-     c: "cyan",
-     u: "uncolored",
-     w: "white",
-     '-': "white"
+     r: red,
+     g: green,
+     b: blue,
+     y: yellow,
+     p: purple,
+     c: cyan,
+     u: uncolored,
+     w: white,
+     '-': white
 };
 
 const jscad_begin = `
 function main(params) {
-    const red = [1,0.4,0.415];
-    const green = [0.42,1,0.4];
-    const blue = [0.4,0.65,1];
-    const cyan = [0.53,1,0.96];
-    const purple = [0.86,0.4,1];
-    const yellow = [0.98,0.96,0.16];
-    const uncolored = [0.7,0.7,0.7];
-    const white = [1,1,1];
-
     var place_holder = CSG.cube({
         center: [0, 0, 0],
         radius: [0.0000001, 0.0000001, 0.0000001]
@@ -136,15 +128,19 @@ return place_holder.union(shapez);
 `
 
 function shape_generator_template(shape, shape_color, layer) {
-    const shape_js = `
+    color0=math.multiply(math.matrix(shape_color[0]), Math.pow(0.92, layer)).valueOf()
+    color1=math.multiply(math.matrix(shape_color[1]), Math.pow(0.92, layer)).valueOf()
+    color2=math.multiply(math.matrix(shape_color[2]), Math.pow(0.92, layer)).valueOf()
+    color3=math.multiply(math.matrix(shape_color[3]), Math.pow(0.92, layer)).valueOf()
+    let shapez = `
     shapez[${layer}-1] = place_holder.union([
-        ${shape[0]}.setColor(${shape_color[0]}).rotateZ(180),
-        ${shape[1]}.setColor(${shape_color[1]}).rotateZ(90),
-        ${shape[2]}.setColor(${shape_color[2]}),
-        ${shape[3]}.setColor(${shape_color[3]}).rotateZ(-90)
+        ${shape[0]}.setColor(${color0}).rotateZ(180),
+        ${shape[2]}.setColor(${color2}),
+        ${shape[1]}.setColor(${color1}).rotateZ(90),
+        ${shape[3]}.setColor(${color3}).rotateZ(-90)
     ]).scale([Math.pow(0.7,${layer}),Math.pow(0.7,${layer}),1]).translate([0,0,0.4*(${layer}-1)])
     `
-    return shape_js
+    return shapez
 }
 
 function generate_shape() {
@@ -218,10 +214,14 @@ function updateSolid()
 <body onload="onload()">
   <h1>Shapez 3d viewer</h1>
 <div id="viewer"></div>
-<input id="shape_code" placeholder="shape code" onchange="generate_shape_uri()" onkeydown="enter_input()">
-  <h2>Playground</h2>
-The jscad output can be edited bellow see original project <a href="https://joostn.github.io/OpenJsCad/">https://joostn.github.io/OpenJsCad/</a>
-<br>- <a href="http://openjscad.azurewebsites.net/">http://openjscad.azurewebsites.net/</a><br>- <a href="https://github.com/jscad/OpenJSCAD.org">https://github.com/jscad/OpenJSCAD.org</a>
+<input id="shape_code" size="50" placeholder="shape code" onchange="generate_shape_uri()" onkeydown="enter_input()">
+  <h2>Info</h2>
+The jscad output can be edited bellow see original project:
+<br>- <a href="https://joostn.github.io/OpenJsCad/">https://joostn.github.io/OpenJsCad/</a>
+<br>- <a href="http://openjscad.azurewebsites.net/">http://openjscad.azurewebsites.net/</a>
+<br>- <a href="https://github.com/jscad/OpenJSCAD.org">https://github.com/jscad/OpenJSCAD.org</a>
+<br>Shape genrator:
+<br>- <a href="https://viewer.shapez.io/">https://viewer.shapez.io/</a>
 <br><br>
 <textarea id="code">
 </textarea><br>
